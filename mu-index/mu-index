@@ -1,0 +1,68 @@
+#!/bin/sh
+
+if [ -z "$2" ]; then
+  echo $0 [MAILDIR] [FOLDERS] [USER]
+  exit
+fi
+
+MAILDIR="$1"
+FOLDERS="$2"
+TARGET_USER="$3"
+
+if [ $EUID -eq 0 ] && [ -z $TARGET_USER ]; then
+    echo "A target user must be specified when running as root. Exiting."
+    exit
+fi
+
+run_as_user_or_root() {
+  if [ $EUID -eq 0 ]; then
+    runuser -l $TARGET_USER -c "$1"
+  else
+    eval "$1"
+  fi
+}
+
+# puts timestamps into an easily comparable format
+extract_timestamp() {
+  local RAW="$(echo "$1" | cut -c1-31)"
+  echo "$(date --date="$RAW" '+%Y-%m-%d:%H:%M:%S')"
+}
+
+# removes html characters that are interpreted poorly by dunst
+format_string() {
+  echo "$1" | sed 's/>/\&gt;/' | sed 's/</\&lt;/' | sed 's/\$/\\$/'
+}
+
+# locate the timestamp of the newest message
+NEWEST_PREFETCH_QUERY="date:today AND maildir:$(echo "$FOLDERS" | sed 's/,/ OR date:today AND maildir:/g')"
+NEWEST_PREFETCH_MSG="$(run_as_user_or_root "mu find -z $NEWEST_PREFETCH_QUERY | head -n 1")"
+NEWEST_PREFETCH_MSG_TIMESTAMP="$(extract_timestamp "$NEWEST_PREFETCH_MSG")"
+
+# reindex all emails using mu
+run_as_user_or_root "mu index --maildir $MAILDIR"
+
+# grab the newest ten emails that are created today and unread
+RECENT_QUERY="flag:unread AND date:today AND maildir:$(echo "$FOLDERS" | sed 's/,/ OR flag:unread AND date:today AND maildir:/g')"
+RECENT_TEN="$(run_as_user_or_root "mu find -z $RECENT_QUERY | head -n 10")"
+
+# maintain the last timestamp to prevent duplicates
+LAST_TIMESTAMP=""
+
+# iterate over each message
+while read -r msg; do
+  MSG_TIMESTAMP="$(extract_timestamp "$msg")"
+  # check if message is newer than previously newest message and not duplicate
+  if [ "$MSG_TIMESTAMP" \> "$NEWEST_PREFETCH_MSG_TIMESTAMP" ] &&
+     [ "$MSG_TIMESTAMP" != "$LAST_TIMESTAMP" ]; then
+    # emit a desktop notification with the email sender and subject
+    MSG_SENDER="$(echo "$msg" | sed -r 's/^.{32}//' | sed 's/>.*$/>/')"
+    MSG_SUBJECT="$(echo "$msg" | sed 's/^.*> //')"
+
+    if [ $EUID -eq 0 ]; then
+        runuser -l "$TARGET_USER" -c "DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send '$(format_string "$MSG_SENDER")' '$(format_string "$MSG_SUBJECT")'"
+    else
+        notify-send "$(format_string "$MSG_SENDER")" "$(format_string "$MSG_SUBJECT")"
+    fi
+  fi
+  LAST_TIMESTAMP="$MSG_TIMESTAMP"
+done <<< "$RECENT_TEN"
