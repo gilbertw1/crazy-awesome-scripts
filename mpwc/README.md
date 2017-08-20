@@ -4,10 +4,10 @@ A simple interactive script that wraps mpw and uses a configuration file to stor
 
 #### Dependencies
 
-* *mpw* - The master password command line client (https://github.com/Lyndir/MasterPassword)
-* *fzf* - Command line fuzzy matcher (https://github.com/junegunn/fzf)
-* *rofi* - Window switcher and fuzzy matcher (https://github.com/DaveDavenport/rofi)
-* *xsel* - Program that allows programmatic clipboard access (http://www.vergenet.net/~conrad/software/xsel/)
+* **mpw** - The master password command line client (https://github.com/Lyndir/MasterPassword)
+* **fzf** - Command line fuzzy matcher (https://github.com/junegunn/fzf)
+* **rofi** - Window switcher and fuzzy matcher (https://github.com/DaveDavenport/rofi)
+* **xsel** - Program that allows programmatic clipboard access (http://www.vergenet.net/~conrad/software/xsel/)
 
 #### Usage
 

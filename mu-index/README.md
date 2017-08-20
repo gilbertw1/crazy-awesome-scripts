@@ -4,8 +4,8 @@ A script that re-indexes a mail directory using `mu` and creates notifications f
 
 #### Dependencies
 
-* *mu* - maildir indexer & searcher (https://github.com/djcb/mu)
-* *notify-send* - sends desktop notifications (https://ss64.com/bash/notify-send.html)
+* **mu** - maildir indexer & searcher (https://github.com/djcb/mu)
+* **notify-send** - sends desktop notifications (https://ss64.com/bash/notify-send.html)
 
 #### Usage
 
@@ -13,9 +13,9 @@ A script that re-indexes a mail directory using `mu` and creates notifications f
 
 #### Parameters
 
-* *maildir* - The directory where the maildir is located at (eg: ~/.mail)
-* *folders* - Commad delimited list of folders to consider when looking for new mail (eg: "/fastmail/INBOX,/gmail/INBOX")
-* *user* - Optional parameter that is required if running as root.
+* **maildir** - The directory where the maildir is located at (eg: ~/.mail)
+* **folders** - Comma delimited list of folders to consider when looking for new mail (eg: "/fastmail/INBOX,/gmail/INBOX")
+* **user** - Optional parameter that is required if running as root.
 
 #### Example
 
