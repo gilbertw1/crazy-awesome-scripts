@@ -1,5 +1,4 @@
-mpwc
-====
+### mpwc
 
 A simple interactive script that wraps mpw and uses a configuration file to store password configurations.
 

@@ -1,5 +1,4 @@
-pawssh
-======
+### pawssh
 
 A script that performs parallel execution of ssh commands on running aws instances.
 

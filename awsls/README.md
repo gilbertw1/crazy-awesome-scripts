@@ -1,5 +1,4 @@
-awsls
-=====
+### awsls
 
 A script that lists out running aws instances, optionally filtering them.
 

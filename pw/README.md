@@ -1,5 +1,4 @@
-pw
-==
+### pw
 
 A simple interactive script that uses `pass` in conjunction with `mpw` to provide a single interface to access all passwords.
 
