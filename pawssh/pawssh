@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if [ -z "$4" ]; then
+  echo $0 [PRIVATE_KEY] [USER] [FILTER] [COMMAND]
+  exit
+fi
+
+PRIVATE_KEY=$1
+USER=$2
+FILTER=$3
+COMMAND=$4
+
+# Create a rondomly sorted list of colors (used to color distinct servers)
+COLORS_LIST=$(echo "31 32 33 34 35 36 37 91 92 93 94 95 96" | tr " " "\n" | sort -R)
+COLORS=$(printf "$COLORS_LIST\n%.0s" {1..50})
+
+# Retrieve all instances matching the filter (formatted: '<NameTag> <Hostname>')
+INSTANCES=$(
+  aws ec2 describe-instances --filter Name=tag:Name,Values="*$FILTER*" |
+    jq --raw-output '.Reservations[]
+                     | .Instances[]
+                     | select(.State.Name == "running")
+                     | (.Tags[] | select(.Key == "Name").Value) + " " + .PublicDnsName')
+
+# Produce list of random colors that match the number of instances
+MAPPINGS_LENGTH="$(echo "$INSTANCES" | wc -l)"
+COLORS_EXACT="$(echo "$COLORS" | head -n "$MAPPINGS_LENGTH")"
+
+# Apply terminal color escape sequences to name tags in the mappings
+MAPPINGS="$(printf "%s\n%s" "$COLORS_EXACT" "$INSTANCES" |
+            awk "NR<=$MAPPINGS_LENGTH"'{map[NR]=$1;next} {cc=map[(NR-'"$MAPPINGS_LENGTH"')]; print "\033["cc"m"$1"\033[0m "$2}')"
+# Get the length of the longest tag name (used to format the tag names in the output)
+LENGTH="$(echo "$MAPPINGS" | awk '{print length($1)}' | sort -nr | head -n 1)"
+
+# Run orgalorg to execute ssh commands in parallel mapping server hostnames back to colored names in the output
+echo "$INSTANCES" |
+    awk '{print $2}' |
+    orgalorg -y -c 9999 -s -k $PRIVATE_KEY -u $USER -C "$COMMAND" |
+    (echo "$MAPPINGS" && cat) |
+    tr -d "\r" |
+    awk 'NR<='"$MAPPINGS_LENGTH"'{map[$2]=$1;next} {if($1 in map)$1=sprintf("%-'"$LENGTH"'s ", map[$1])}1'

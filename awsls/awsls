@@ -1,0 +1,10 @@
+#!/bin/sh
+
+FILTER="${1:-*}"
+
+# Retrieve all instances matching the query (formatted: '<NameTag> <Hostname>')
+aws ec2 describe-instances --filter Name=tag:Name,Values="*$FILTER*" |
+    jq --raw-output '.Reservations[]
+                     | .Instances[]
+                     | select(.State.Name == "running")
+                     | (.Tags[] | select(.Key == "Name").Value) + " " + .PublicDnsName'

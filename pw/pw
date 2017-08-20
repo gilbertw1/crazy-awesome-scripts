@@ -1,0 +1,67 @@
+#!/bin/sh
+
+if [ ! -f ~/.mpw ]; then
+    echo "~/.mpw does not exist!"
+    exit
+fi
+
+if [ ! -d ~/.password-store ]; then
+    echo "~/.password-store does not exist!"
+    exit
+fi
+
+# create a list of all pass entries
+TERMS="$(find ~/.password-store -type f | cut -sd / -f 2- | sed "s/^.*password-store\///" | sed '/^\./ d' | sed "s/.gpg//")"
+
+# prompt the user to select a pass entry (interactive use fzf, otherwise use rofi)
+if [[ -t 0 ]]; then
+    MATCHING_TERM="$(echo "$TERMS" | fzf-tmux --prompt='site: ')"
+else
+    MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 -p 'site: ')"
+fi
+
+# retrieve password for entry
+PASSWORD="$(pass $MATCHING_TERM)"
+
+# load mpw (master password) config
+MPW_CONFIG="$(cat ~/.mpw)"
+# look up matching mpw entry for password
+MATCHING_ENTRY="$(echo "$MPW_CONFIG" | grep -i "^$PASSWORD\s" | head -n 1)"
+# extract site from matching entry
+MATCHING_SITE="$(echo "$MATCHING_ENTRY" | cut -d' ' -f1)"
+
+# if matching site is empty then we have an actual password
+if [ -z "$MATCHING_SITE" ]; then
+    # put the password in the clipboard
+    echo "$PASSWORD" | xsel --clipboard
+else
+    # if we have a matching site then prompt the user to enter the master password (interactive use normal prompt, otherwise use rofi)
+    if [[ -t 0 ]]; then
+        echo -n "Password:"
+        read -s MASTER_PASSWORD
+    else
+        MASTER_PASSWORD="$(echo "" | rofi -password -dmenu -i -lines 1 -width 30 -p 'password: ')"
+    fi
+
+    # extract selected site value from mpw entry
+    MATCHING_SITE_VALUE="$(echo "$MATCHING_ENTRY" | cut -d' ' -f2)"
+    # extract matching site type from mpw entry (max, long, basic, etc)
+    MATCHING_SITE_TYPE="$(echo "$MATCHING_ENTRY" | cut -d' ' -f3)"
+    # extract the matching site counter from the mpw entry
+    MATCHING_SITE_COUNTER="$(echo "$MATCHING_ENTRY" | cut -d' ' -f4)"
+
+    # use expect to invoke mpw, enter the master password, and capture the program's output
+    MPW_OUTPUT=$(expect -c "
+        set timeout -1
+        spawn mpw -t $MATCHING_SITE_TYPE -c $MATCHING_SITE_COUNTER $MATCHING_SITE_VALUE
+        match_max 100000
+        expect -exact \"Your master password: \"
+        send -- \"$MASTER_PASSWORD\r\"
+        expect eof
+    ")
+
+    # extract the password from the mpw output
+    PASSWORD="$(echo "$MPW_OUTPUT" | sed '4q;d' | sed -r 's/^.*]:\s//')"
+    # put the password in the clipboard
+    echo "$PASSWORD" | xsel --clipboard
+fi

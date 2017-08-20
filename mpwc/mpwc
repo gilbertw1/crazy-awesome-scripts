@@ -1,0 +1,50 @@
+#!/bin/sh
+
+if [ ! -f ~/.mpw ]; then
+    echo "~/.mpw does not exist!"
+    exit
+fi
+
+# load mpw (master password) config
+MPW_CONFIG="$(cat ~/.mpw)"
+# format list of sites
+SITES="$(echo "$MPW_CONFIG" | cut -d' ' -f1)"
+
+# prompt user to select a site (interactive use fzf, otherwise use rofi)
+if [[ -t 0 ]]; then
+    SELECTED_SITE="$(echo "$SITES" | fzf-tmux --prompt='site: ')"
+else
+    SELECTED_SITE="$(echo "$SITES" | rofi -dmenu -i -lines 20 -width 30 -p 'site: ')"
+fi
+
+# prompt for the user to enter the master password (interactive use normal prompt, otherwise use rofi)
+if [[ -t 0 ]]; then
+    echo -n "Password:"
+    read -s MASTER_PASSWORD
+else
+    MASTER_PASSWORD="$(echo "" | rofi -password -dmenu -i -lines 1 -width 30 -p 'password: ')"
+fi
+
+# look up matching mpw entry for selected site
+SELECTED_ENTRY="$(echo "$MPW_CONFIG" | grep -i "^$SELECTED_SITE\s" | head -n 1)"
+# extract selected site value from mpw entry
+SELECTED_SITE_VALUE="$(echo "$SELECTED_ENTRY" | cut -d' ' -f2)"
+# extract selected site type from mpw entry (max, long, basic, etc)
+SELECTED_SITE_TYPE="$(echo "$SELECTED_ENTRY" | cut -d' ' -f3)"
+# extract the selected site counter from the mpw entry
+SELECTED_SITE_COUNTER="$(echo "$SELECTED_ENTRY" | cut -d' ' -f4)"
+
+# use expect to invoke mpw, enter the master password, and capture the program's output
+MPW_OUTPUT=$(expect -c "
+        set timeout -1
+        spawn mpw -t $SELECTED_SITE_TYPE -c $SELECTED_SITE_COUNTER $SELECTED_SITE_VALUE
+        match_max 100000
+        expect -exact \"Your master password: \"
+        send -- \"$MASTER_PASSWORD\r\"
+        expect eof
+    ")
+
+# extract the password from the mpw output
+PASSWORD="$(echo "$MPW_OUTPUT" | sed '4q;d' | sed -r 's/^.*]:\s//')"
+# put the password in the clipboard
+echo -n "$PASSWORD" | xsel --clipboard
