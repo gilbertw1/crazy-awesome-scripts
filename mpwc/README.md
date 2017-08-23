@@ -15,7 +15,9 @@ A simple interactive script that wraps mpw and uses a configuration file to stor
 
 #### How it works
 
-`mpwc` uses a config file containing mpw (Master Password) configuration entries to allow a user to select a site and easily generate a password using their Master Password. Once the password is created it is then added to the users clipboard. If run from the command line then `mpwc` uses fzf to match entries, otherwise it uses `rofi` if run non-interactively.
+`mpwc` uses a config file containing mpw (Master Password) configuration entries to allow a user to select a site and easily generate a password using their Master Password. Once the password is created it is then added to the users clipboard. A popup notification, optionally containing the generated master password sybols will be displayed as well.
+
+If run from the command line then `mpwc` uses fzf to match entries, otherwise it uses `rofi` if run non-interactively. Additionally, if a clipster daemon is running the password will be automatically removed from the clipboard after 30 seconds. 
 
 #### Configuration
 

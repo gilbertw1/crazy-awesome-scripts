@@ -17,11 +17,13 @@ A simple interactive script that uses `pass` in conjunction with `mpw` to provid
 
 #### How it works
 
-This script works by providing the user a list of all `pass` entries and allowing them to select one. It then retrieves the stored password for the selected entry. If the stored password entry matches a entry `identifier` stored in a mpw (Master Password) config file exactly, then it will prompt the user for their Master Password, which it will then use along with information from the mpw config file to generate a the password for the `site` which is then added to the clipboard. If the password retrieved from `pass` did not match an mpw entry then it will be simply added to the clipboard. If run from the command line then `pw` uses fzf to match entries, otherwise it uses `rofi` if run non-interactively.
+This script works by providing the user a list of all `pass` entries and allowing them to select one. It then retrieves the stored password for the selected entry. If the stored password entry matches a entry `identifier` stored in a mpw (Master Password) config file exactly, then it will prompt the user for their Master Password, which it will then use along with information from the mpw config file to generate a the password for the `site` which is then added to the clipboard. If the password retrieved from `pass` did not match an mpw entry then it will be simply added to the clipboard. A popup notification, optionally containing the generated master password sybols will be displayed as well.
+
+If run from the command line then `pw` uses fzf to match entries, otherwise it uses `rofi` if run non-interactively. Additionally, if a clipster daemon is running the password will be automatically removed from the clipboard after 30 seconds.
 
 #### Configuration
 
-`mpwc` looks for a single configuration file named `~/.mpw` which contains entries, one per line, of the format:
+`pw` looks for a single configuration file named `~/.mpw` which contains entries, one per line, of the format:
 
     <identifier> <site> <type> <counter>
 
@@ -38,6 +40,4 @@ If `yahoo` were chosen then the resulting `mpw` command would be issued to gener
 
 #### TODO
 
-* User clipster to remove password entry from clipboard after a period of time
 * MacOS support
-* Surface mpw symbols after entering master password

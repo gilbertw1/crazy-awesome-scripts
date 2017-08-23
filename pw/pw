@@ -20,6 +20,11 @@ else
     MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 -p 'site: ')"
 fi
 
+if [ $? -ne 0 ]; then
+    echo "Aborted selected password entry, exiting..."
+    exit
+fi
+
 # retrieve password for entry
 PASSWORD="$(pass $MATCHING_TERM)"
 
@@ -60,8 +65,31 @@ else
         expect eof
     ")
 
+
     # extract the password from the mpw output
     PASSWORD="$(echo "$MPW_OUTPUT" | sed '4q;d' | sed -r 's/^.*]:\s//')"
+    # extract mpw symbols (remove terminal ctrl codes)
+    SYMBOLS="$(echo "$MPW_OUTPUT" | sed '4q;d' | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
     # put the password in the clipboard
     echo "$PASSWORD" | xsel --clipboard
 fi
+
+# Display popup notification, optionally with mpw symbols if master password
+if [ -z $SYMBOLS ]; then
+    notify-send "./pw ($MATCHING_TERM)" "Copied password to clipboard"
+else
+    notify-send "./pw ($MATCHING_TERM)" "Copied password to clipboard ($SYMBOLS)"
+fi
+
+# Verify clipster is running, exit otherwise
+clipster -o > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo 'Not using clipster, password will not be removed from clipboard'
+    exit
+fi
+
+# remove clip from clipster after 30 seconds
+echo ""
+echo "Deleting password from clipoard in 30 seconds..."
+sleep 30
+echo -n "$PASSWORD" | clipster -r --clipboard

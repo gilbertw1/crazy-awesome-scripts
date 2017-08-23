@@ -46,5 +46,22 @@ MPW_OUTPUT=$(expect -c "
 
 # extract the password from the mpw output
 PASSWORD="$(echo "$MPW_OUTPUT" | sed '4q;d' | sed -r 's/^.*]:\s//')"
+# extract mpw symbols (remove terminal ctrl codes)
+SYMBOLS="$(echo "$MPW_OUTPUT" | sed '4q;d' | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
 # put the password in the clipboard
 echo -n "$PASSWORD" | xsel --clipboard
+
+# Display popup notification with mpw symbols
+notify-send "./mpwc" "Copied password to clipboard ($SYMBOLS)"
+
+# Verify clipster is running, exit otherwise
+clipster -o > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo 'Not using clipster, password will not be removed from clipboard'
+    exit
+fi
+
+# remove clip from clipster after 30 seconds
+echo "Deleting password from clipoard in 30 seconds..."
+sleep 30
+echo -n "$PASSWORD" | clipster -r --clipboard
