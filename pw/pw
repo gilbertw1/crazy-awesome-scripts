@@ -10,8 +10,32 @@ if [ ! -d ~/.password-store ]; then
     exit
 fi
 
+# load pw domain cache if it exists
+DOMAIN_CACHE=""
+if [ -f ~/.pw-domain-cache ]; then
+    DOMAIN_CACHE="$(cat ~/.pw-domain-cache)"
+fi
+
+# extract domain from url if it exists
+URL="$1"
+if [ ! -z "$URL" ]; then
+    DOMAIN="$(echo "$URL" | awk -F/ '{print tolower($3)}' | rev | cut -d'.' -f1-2 | rev)"
+    DOMAIN_CACHE_MATCH="$(echo "$DOMAIN_CACHE" | grep "^$DOMAIN\s")"
+fi
+
 # create a list of all pass entries
 TERMS="$(find ~/.password-store -type f | cut -sd / -f 2- | sed "s/^.*password-store\///" | sed '/^\./ d' | sed "s/.gpg//")"
+
+# if url was provided, look it's domain up in the cache, and reorder the TERMS
+if [ ! -z "$DOMAIN_CACHE_MATCH" ]; then
+    for match in $(echo $DOMAIN_CACHE_MATCH | cut -d' ' -f2 | tr ',' '\n')
+    do
+        if [ ! -z "$(echo "$TERMS" | grep "^$match")" ]; then
+            TERMS="$(echo "$TERMS" | sed "\:^$match:d")"
+            TERMS=$(printf "$match\n$TERMS")
+        fi
+    done
+fi
 
 # prompt the user to select a pass entry (interactive use fzf, otherwise use rofi)
 if [[ -t 0 ]]; then
@@ -20,9 +44,26 @@ else
     MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 -p 'site: ')"
 fi
 
-if [ $? -ne 0 ]; then
+if [ $? -ne 0 ] || [ -z "$MATCHING_TERM" ]; then
     echo "Aborted selected password entry, exiting..."
     exit
+fi
+
+# if the domain exists, check and cache the selected term
+if [ ! -z "$DOMAIN" ]; then
+    if [ ! -z "$DOMAIN_CACHE_MATCH" ]; then
+        if [ -z "$(echo "$DOMAIN_CACHE_MATCH" | grep "$MATCHING_TERM")" ]; then
+            DOMAIN_CACHE_MATCH="$(printf "$DOMAIN_CACHE_MATCH,$MATCHING_TERM")"
+            DOMAIN_CACHE="$(echo "$DOMAIN_CACHE" | sed "/^$DOMAIN/d")"
+            printf "$DOMAIN_CACHE\n$DOMAIN_CACHE_MATCH" > ~/.pw-domain-cache
+        fi
+    else
+        if [ -z "$DOMAIN_CACHE" ]; then
+            printf "$DOMAIN $MATCHING_TERM" > ~/.pw-domain-cache
+        else
+            printf "$DOMAIN_CACHE\n$DOMAIN $MATCHING_TERM" > ~/.pw-domain-cache
+        fi
+    fi
 fi
 
 # retrieve password for entry
