@@ -27,24 +27,34 @@ if [ ! -z "$URL" ]; then
 fi
 
 # create a list of all pass entries
-TERMS="$(find ~/.password-store -type f | cut -sd / -f 2- | sed "s/^.*password-store\///" | sed '/^\./ d' | sed "s/.gpg//")"
+TERMS="$(find ~/.password-store/ -type f | cut -sd / -f 2- | sed "s/^.*password-store\///" | sed '/^\./ d' | sed "s/.gpg//")"
 
+
+ACTIVE_ITEMS=0
 # if url was provided, look it's domain up in the cache, and reorder the TERMS
 if [ ! -z "$DOMAIN_CACHE_MATCH" ]; then
     for match in $(echo $DOMAIN_CACHE_MATCH | cut -d' ' -f2 | tr ',' '\n')
     do
         if [ ! -z "$(echo "$TERMS" | grep "^$match")" ]; then
+            ((ACTIVE_ITEMS++))
             TERMS="$(echo "$TERMS" | sed "\:^$match:d")"
             TERMS=$(printf "$match\n$TERMS")
         fi
     done
 fi
 
+ACTIVE_FLAG=""
+if [ "$ACTIVE_ITEMS" -gt 0 ]; then
+    ACTIVE_FLAG="-a 0-$((ACTIVE_ITEMS-1))"
+fi
+
+echo "ACTIVE_FLAG: $ACTIVE_FLAG"
+
 # prompt the user to select a pass entry (interactive use fzf, otherwise use rofi)
 if [[ -t 0 ]]; then
     MATCHING_TERM="$(echo "$TERMS" | fzf-tmux --prompt='site: ')"
 else
-    MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 -p 'site: ')"
+    MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 $ACTIVE_FLAG -p 'site: ')"
 fi
 
 if [ $? -ne 0 ] || [ -z "$MATCHING_TERM" ]; then

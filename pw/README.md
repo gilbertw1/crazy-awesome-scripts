@@ -17,11 +17,11 @@ A simple interactive script that uses `pass` in conjunction with `mpw` to provid
 
 #### How it works
 
-This script works by providing the user a list of all `pass` entries and allowing them to select one. It then retrieves the stored password for the selected entry. If the stored password entry matches a entry `identifier` stored in a mpw (MasterPassword) config file exactly, then it will prompt the user for their Master Password, which it will then use along with information from the mpw config file to generate a the password which is then added to the clipboard. If the password retrieved from `pass` did not match an mpw entry then it will be simply added to the clipboard. A popup notification, optionally containing the generated master password symbols will be displayed as well.
+This script works by providing the user a list of all `pass` entries and allowing them to select one. It then retrieves the stored password for the selected entry. If the stored password entry matches a entry `identifier` stored in a mpw (MasterPassword) config file exactly, then it will prompt the user for their Master Password, which it will then use along with information from the mpw config file to generate a password which is then added to the clipboard. If the password retrieved from `pass` did not match an mpw entry then it will be simply added to the clipboard. A popup notification, optionally containing the generated master password symbols will be displayed as well.
 
 Additionally, if a url is provided to the command, `pw` will cache the selected password entry and push that entry to the top of the selection list the next time it's called with a url containing the same base domain. This works with multiple entries.
 
-If run from the command line then `pw` uses fzf to match entries, otherwise it uses `rofi` if run non-interactively. Additionally, if a clipster daemon is running the password will be automatically removed from the clipboard after 30 seconds.
+If run from the command line then `pw` uses `fzf` to match entries, otherwise it uses `rofi` if run non-interactively. Additionally, if a clipster daemon is running the password will be automatically removed from the clipboard after 30 seconds.
 
 #### Configuration
 
