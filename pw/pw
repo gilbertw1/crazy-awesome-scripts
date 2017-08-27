@@ -119,9 +119,9 @@ else
 
 
     # extract the password from the mpw output
-    PASSWORD="$(echo "$MPW_OUTPUT" | sed '4q;d' | sed -r 's/^.*]:\s//')"
+    PASSWORD="$(echo "$MPW_OUTPUT" | tail -n 1 | sed -r 's/^.*]:\s//')"
     # extract mpw symbols (remove terminal ctrl codes)
-    SYMBOLS="$(echo "$MPW_OUTPUT" | sed '4q;d' | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
+    SYMBOLS="$(echo "$MPW_OUTPUT" | tail -n 1 | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
     # put the password in the clipboard
     echo "$PASSWORD" | xsel --clipboard
 fi
