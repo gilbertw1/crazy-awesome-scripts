@@ -83,7 +83,7 @@ fi
 PASSWORD="$(pass $MATCHING_TERM)"
 
 # look up matching mpw entry for password
-MATCHING_ENTRY="$(echo "$MPW_CONFIG" | grep -i "^$PASSWORD\s" | head -n 1)"
+MATCHING_ENTRY="$(echo "$MPW_CONFIG" | sed "s/\t/ " | tr -s ' ' | grep -i "^$PASSWORD\s" | head -n 1)"
 # extract site from matching entry
 MATCHING_SITE="$(echo "$MATCHING_ENTRY" | cut -d' ' -f1)"
 

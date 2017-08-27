@@ -26,7 +26,7 @@ else
 fi
 
 # look up matching mpw entry for selected site
-SELECTED_ENTRY="$(echo "$MPW_CONFIG" | grep -i "^$SELECTED_SITE\s" | head -n 1)"
+SELECTED_ENTRY="$(echo "$MPW_CONFIG" | sed "s/\t/ " | tr -s ' ' | grep -i "^$SELECTED_SITE\s" | head -n 1)"
 # extract selected site value from mpw entry
 SELECTED_SITE_VALUE="$(echo "$SELECTED_ENTRY" | cut -d' ' -f2)"
 # extract selected site type from mpw entry (max, long, basic, etc)
@@ -45,9 +45,9 @@ MPW_OUTPUT=$(expect -c "
     ")
 
 # extract the password from the mpw output
-PASSWORD="$(echo "$MPW_OUTPUT" | sed '4q;d' | sed -r 's/^.*]:\s//')"
+PASSWORD="$(echo "$MPW_OUTPUT" | tail -n 1 | sed -r 's/^.*]:\s//')"
 # extract mpw symbols (remove terminal ctrl codes)
-SYMBOLS="$(echo "$MPW_OUTPUT" | sed '4q;d' | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
+SYMBOLS="$(echo "$MPW_OUTPUT" | tail -n 1 | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
 # put the password in the clipboard
 echo -n "$PASSWORD" | xsel --clipboard
 
