@@ -26,7 +26,7 @@ else
 fi
 
 # look up matching mpw entry for selected site
-SELECTED_ENTRY="$(echo "$MPW_CONFIG" | sed "s/\t/ " | tr -s ' ' | grep -i "^$SELECTED_SITE\s" | head -n 1)"
+SELECTED_ENTRY="$(echo "$MPW_CONFIG" | tr "\t" " " | tr -s ' ' | grep -i "^$SELECTED_SITE\s" | head -n 1)"
 # extract selected site value from mpw entry
 SELECTED_SITE_VALUE="$(echo "$SELECTED_ENTRY" | cut -d' ' -f2)"
 # extract selected site type from mpw entry (max, long, basic, etc)
