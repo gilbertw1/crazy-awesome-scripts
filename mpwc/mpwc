@@ -44,6 +44,14 @@ MPW_OUTPUT=$(expect -c "
         expect eof
     ")
 
+
+echo "$MPW_OUTPUT" | grep -q "Incorrect master password"
+if [ $? -eq 0 ]; then
+    notify-send "./mpwc" "Incorrect master password."
+    echo "Incorrect master password."
+    exit
+fi
+
 # extract the password from the mpw output
 PASSWORD="$(echo "$MPW_OUTPUT" | tail -n 1 | sed -r 's/^.*]:\s//')"
 # extract mpw symbols (remove terminal ctrl codes)
