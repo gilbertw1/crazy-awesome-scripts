@@ -108,26 +108,7 @@ else
     MATCHING_SITE_COUNTER="$(echo "$MATCHING_ENTRY" | cut -d' ' -f4)"
 
     # use expect to invoke mpw, enter the master password, and capture the program's output
-    MPW_OUTPUT=$(expect -c "
-        set timeout -1
-        spawn mpw -t $MATCHING_SITE_TYPE -c $MATCHING_SITE_COUNTER $MATCHING_SITE_VALUE
-        match_max 100000
-        expect -exact \"Your master password: \"
-        send -- \"$MASTER_PASSWORD\r\"
-        expect eof
-    ")
-
-    echo "$MPW_OUTPUT" | grep -q "Incorrect master password"
-    if [ $? -eq 0 ]; then
-        notify-send "./pw ($MATCHING_TERM)" "Incorrect master password."
-        echo "Incorrect master password."
-        exit
-    fi
-
-    # extract the password from the mpw output
-    PASSWORD="$(echo "$MPW_OUTPUT" | tail -n 1 | sed -r 's/^.*]:\s//')"
-    # extract mpw symbols (remove terminal ctrl codes)
-    SYMBOLS="$(echo "$MPW_OUTPUT" | tail -n 1 | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
+    PASSWORD="$(echo $MASTER_PASSWORD | mpwc -t "$MATCHING_SITE_TYPE" -c "$MATCHING_SITE_COUNTER" -s "$MATCHING_SITE_VALUE")"
     # put the password in the clipboard
     echo "$PASSWORD" | xsel --clipboard
 fi
