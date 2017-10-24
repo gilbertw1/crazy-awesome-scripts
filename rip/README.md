@@ -23,3 +23,7 @@ show code previews.
     - `ctrl-j / ctrj-n / down`: Next result
     - `ctrl-k / ctrj-p / up`: Previous result
     - `<enter>`: Open selected file/line in neovim
+
+#### Screencast
+
+![rip screencast](http://drop.bryan.sh/ETrpU7KkH5--rip.gif)
