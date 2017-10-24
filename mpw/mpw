@@ -8,7 +8,7 @@ fi
 # load mpw (master password) config
 MPW_CONFIG="$(cat ~/.mpw)"
 # format list of sites
-SITES="$(echo "$MPW_CONFIG" | cut -d' ' -f1)"
+SITES="$(echo "$MPW_CONFIG" | tr "\t" " " | tr -s ' ' | cut -d' ' -f1)"
 
 # prompt user to select a site (interactive use fzf, otherwise use rofi)
 if [[ -t 0 ]]; then
@@ -34,28 +34,11 @@ SELECTED_SITE_TYPE="$(echo "$SELECTED_ENTRY" | cut -d' ' -f3)"
 # extract the selected site counter from the mpw entry
 SELECTED_SITE_COUNTER="$(echo "$SELECTED_ENTRY" | cut -d' ' -f4)"
 
-# use expect to invoke mpw, enter the master password, and capture the program's output
-MPW_OUTPUT=$(expect -c "
-        set timeout -1
-        spawn mpw -t $SELECTED_SITE_TYPE -c $SELECTED_SITE_COUNTER $SELECTED_SITE_VALUE
-        match_max 100000
-        expect -exact \"Your master password: \"
-        send -- \"$MASTER_PASSWORD\r\"
-        expect eof
-    ")
+# Invoke mpwc to generate site specific password and symbols
+MPWC_OUTPUT="$(echo "$MASTER_PASSWORD" | mpwc -t "$SELECTED_SITE_TYPE" -c "$SELECTED_SITE_COUNTER" "$SELECTED_SITE_VALUE" -i)"
+PASSWORD="$(echo "$MPWC_OUTPUT" | cut -d' ' -f2)"
+SYMBOLS="$(echo "$MPWC_OUTPUT" | cut -d "]" -f1 | cut -c 2-)"
 
-
-echo "$MPW_OUTPUT" | grep -q "Incorrect master password"
-if [ $? -eq 0 ]; then
-    notify-send "./mpwc" "Incorrect master password."
-    echo "Incorrect master password."
-    exit
-fi
-
-# extract the password from the mpw output
-PASSWORD="$(echo "$MPW_OUTPUT" | tail -n 1 | sed -r 's/^.*]:\s//')"
-# extract mpw symbols (remove terminal ctrl codes)
-SYMBOLS="$(echo "$MPW_OUTPUT" | tail -n 1 | cut -d "]" -f1 | cut -c 2- | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | sed "s/\x0f//g")"
 # put the password in the clipboard
 echo -n "$PASSWORD" | xsel --clipboard
 
@@ -70,6 +53,6 @@ if [ $? -ne 0 ]; then
 fi
 
 # remove clip from clipster after 30 seconds
-echo "Deleting password from clipoard in 30 seconds..."
+echo "\nDeleting password from clipoard in 30 seconds..."
 sleep 30
 echo -n "$PASSWORD" | clipster -r --clipboard

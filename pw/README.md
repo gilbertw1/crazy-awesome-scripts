@@ -1,15 +1,19 @@
 ### pw
 
-A simple interactive script that uses `pass` in conjunction with `mpw` to provide a single interface to access all passwords.
+A simple interactive script that uses `pass` in conjunction with `mpw` to provide a single interface
+to access  all passwords.
 
 #### Dependencies
 
 * **pass** - the standard unix password manager (https://www.passwordstore.org/)
-* **mpw** - The master password command line client (https://github.com/Lyndir/MasterPassword)
+* **mpwc** - A simple and flexible Master Password CLI client (https://github.com/gilbertw1/mpwc)
 * **fzf** - Command line fuzzy matcher (https://github.com/junegunn/fzf)
 * **rofi** - Window switcher and fuzzy matcher (https://github.com/DaveDavenport/rofi)
 * **xsel** - Program that allows programmatic clipboard access (http://www.vergenet.net/~conrad/software/xsel/)
-* **expect** - A tool for automating interactive applications (http://expect.sourceforge.net/)
+
+#### Optional Dependencies
+
+* **clipster** - A simple and flexible clipboard manager (https://github.com/mrichar1/clipster)
 
 #### Usage
 
@@ -18,15 +22,27 @@ A simple interactive script that uses `pass` in conjunction with `mpw` to provid
 
 #### How it works
 
-This script works by providing the user a list of all `pass` entries and allowing them to select one. It then retrieves the stored password for the selected entry. If the stored password entry matches a entry `identifier` stored in a mpw (MasterPassword) config file exactly, then it will prompt the user for their Master Password, which it will then use along with information from the mpw config file to generate a password which is then added to the clipboard. If the password retrieved from `pass` did not match an mpw entry then it will be simply added to the clipboard. A popup notification, optionally containing the generated master password symbols will be displayed as well.
+This script works by providing the user a list of all `pass` entries and allowing them to select
+one. It then retrieves the stored password for the selected entry. If the stored password entry
+matches a entry `identifier` stored in a mpw (MasterPassword) config file exactly, then it will
+prompt the user for their Master Password, which it will then use along with information from the
+mpw config file to generate a password which is then added to the clipboard. If the password
+retrieved from `pass` did not match an mpw entry then it will be simply added to the clipboard. A
+popup notification, optionally containing the generated master password symbols will be displayed as
+well.
 
-Additionally, if a url is provided to the command, `pw` will cache the selected password entry and push that entry to the top of the selection list the next time it's called with a url containing the same base domain. This works with multiple entries.
+Additionally, if a url is provided to the command, `pw` will cache the selected password entry and
+push that entry to the top of the selection list the next time it's called with a url containing the
+same base domain. This works with multiple  entries.
 
-If run from the command line then `pw` uses `fzf` to match entries, otherwise it uses `rofi` if run non-interactively. Additionally, if a clipster daemon is running the password will be automatically removed from the clipboard after 30 seconds.
+If run from the command line then `pw` uses `fzf` to match entries, otherwise it uses `rofi` if run
+non-interactively. Additionally, if a clipster daemon is running the password will be automatically
+removed from the clipboard after 30 seconds.
 
 #### Configuration
 
-`pw` looks for a single configuration file named `~/.mpw` which contains entries, one per line, of the format:
+`pw` looks for a single configuration file named `~/.mpw` which contains entries, one per line, of
+the  format:
 
     <identifier> <site> <type> <counter>
 
@@ -43,12 +59,17 @@ If `yahoo` was chosen then the resulting `mpw` command would be issued to genera
 
 #### Master Password integration with Pass
 
-In order to use `pw` to properly handle both MasterPassword generated passwords and normal passwords stored in `pass`, an identifer from the `.mpw` config file should stored as the password in `pass`. For example, using the previous configuration example if we wanted to add a password for our work google account which we manage using MasterPassword we would add the following to pass:
+In order to use `pw` to properly handle both MasterPassword generated passwords and normal passwords
+stored in `pass`, an identifer from the `.mpw` config file should stored as the password in `pass`.
+For example, using the previous configuration example if we wanted to add a password for our work
+google account which we manage using MasterPassword we would add the following to  pass:
 
     pass insert google/user@company.com
     # then enter 'google-work' as the password
 
-The next time we run `pw` and select `google/user@company.com`, it will properly detect that this is a password generated by MasterPassword and will prompt the user to enter their master password, after which it will generate the correct password and copy it to the clipboard.
+The next time we run `pw` and select `google/user@company.com`, it will properly detect that this is
+a password generated by MasterPassword and will prompt the user to enter their master password,
+after which it will generate the correct password and copy it to the clipboard.
 
 #### Usage with qutebrowser
 

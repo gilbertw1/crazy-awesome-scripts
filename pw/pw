@@ -107,8 +107,11 @@ else
     # extract the matching site counter from the mpw entry
     MATCHING_SITE_COUNTER="$(echo "$MATCHING_ENTRY" | cut -d' ' -f4)"
 
-    # use expect to invoke mpw, enter the master password, and capture the program's output
-    PASSWORD="$(echo $MASTER_PASSWORD | mpwc -t "$MATCHING_SITE_TYPE" -c "$MATCHING_SITE_COUNTER" -s "$MATCHING_SITE_VALUE")"
+    # Invoke mpwc to generate site specific password and symbols
+    MPWC_OUTPUT="$(echo "$MASTER_PASSWORD" | mpwc -t "$MATCHING_SITE_TYPE" -c "$MATCHING_SITE_COUNTER" "$MATCHING_SITE_VALUE" -i)"
+    PASSWORD="$(echo "$MPWC_OUTPUT" | cut -d' ' -f2)"
+    SYMBOLS="$(echo "$MPWC_OUTPUT" | cut -d "]" -f1 | cut -c 2-)"
+
     # put the password in the clipboard
     echo "$PASSWORD" | xsel --clipboard
 fi

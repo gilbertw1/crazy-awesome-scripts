@@ -1,0 +1,12 @@
+#!/bin/sh
+
+FILE_LINE_NO=$(sk-tmux --ansi -i -c 'rg -i --no-heading --line-number --color=always "{}"' --preview "preview {0}")
+
+if [ $? -ne 0 ] || [ -z "$FILE_LINE_NO" ]; then
+    exit
+fi
+
+FILE="$(echo "$FILE_LINE_NO" | cut -d":" -f1)"
+LINE_NO="$(echo "$FILE_LINE_NO" | cut -d":" -f2)"
+
+nvim +$LINE_NO $FILE

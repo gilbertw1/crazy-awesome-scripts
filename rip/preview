@@ -1,0 +1,23 @@
+#!/bin/sh
+
+FILE_LINE_NO="$1"
+FILE="$(echo "$FILE_LINE_NO" | cut -d":" -f1)"
+SUFFIX="$(echo $FILE | cut -d"." -f2)"
+LINE_NO="$(echo "$FILE_LINE_NO" | cut -d":" -f2)"
+
+if [ "$LINE_NO" -gt 10 ]
+then
+    START="$((${LINE_NO} - 10))"
+    END="$((${LINE_NO} + 10))"
+else
+    START="1"
+    END="21"
+fi
+
+OFFSET="$((${LINE_NO} - ${START} + 1))"
+ESC=$(printf '\033')
+
+echo "$(sed -n ${START},${END}p $FILE)" \
+    | highlight -O xterm256 -s anotherdark -l -m $START -S $SUFFIX --force \
+    | sed "${OFFSET}s/.*/${ESC}[1;48;5;8m\0${ESC}[0m/" \
+    | sed "${OFFSET}s/\[m/[1;48;5;8m${ESC}[1;38;5;0m/g"
