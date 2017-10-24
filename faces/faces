@@ -1,0 +1,27 @@
+#!/bin/sh
+
+FACES='¯\_(ツ)_/¯
+( ͡° ͜ʖ ͡°)
+༼ つ ◕_◕ ༽つ
+ಠ_ಠ
+(╯°□°）╯︵ ┻━┻
+(•_•) ( •_•)>⌐■-■ (⌐■_■)
+┬─┬ノ( º _ ºノ)
+(▀̿Ĺ̯▀̿ ̿)
+┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻
+(°ロ°)☝
+(☞ﾟ∀ﾟ)☞
+̿ ̿ ̿'̿'\̵͇̿̿\з=(•_•)=ε/̵͇̿̿/'̿'̿ ̿'
+
+if [[ -t 0 ]]; then
+    CHOSEN_FACE="$(echo "$FACES" | fzf-tmux --prompt='face: ')"
+else
+    CHOSEN_FACE="$(echo "$FACES" | rofi -dmenu -i -lines 15 -width 30 -p 'face: ')"
+fi
+
+if [ $? -ne 0 ] || [ -z "$CHOSEN_FACE" ]; then
+    echo "Aborted face selection, exiting..."
+    exit
+fi
+
+echo -n "$CHOSEN_FACE" | xsel --clipboard
