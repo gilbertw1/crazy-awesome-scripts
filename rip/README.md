@@ -20,9 +20,9 @@ show code previews.
 
 #### Keybindings
 
-    - `ctrl-j / ctrj-n / down`: Next result
-    - `ctrl-k / ctrj-p / up`: Previous result
-    - `<enter>`: Open selected file/line in neovim
+- `ctrl-j / ctrj-n / down`: Next result
+- `ctrl-k / ctrj-p / up`: Previous result
+- `<enter>`: Open selected file/line in neovim
 
 #### Screencast
 
