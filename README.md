@@ -13,3 +13,4 @@ scripts
 * [mu-index](mu-index) - A script that re-indexes a mail directory using `mu` and creates notifications for new emails.
 * [pawssh](pawssh) - A script that performs parallel execution of ssh commands on running aws instances.
 * [pw](pw) - An interactive script that uses `pass` and `mpw` to provide a single interface to access all passwords.
+* [rip](rip) - A simple script that uses ripgrep interactively to search or 'rip' through text or code files.
