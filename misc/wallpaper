@@ -1,0 +1,8 @@
+#!/bin/sh
+## Usage: ./wallpaper IMAGE
+## Description: Sets $IMAGE as the background wallpaper
+## Deps: feh
+
+if [ ! -z "$1" ]; then
+  feh --bg-scale "$1"
+fi

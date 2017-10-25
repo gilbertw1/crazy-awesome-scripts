@@ -1,0 +1,5 @@
+#!/bin/sh
+## Usage: ./start PROG [ARGS]
+## Description: Starts a program in the background disconnected from current session
+
+nohup "$@" >/dev/null 2>&1 &

@@ -1,0 +1,6 @@
+#!/bin/sh
+## Usage: ./host-scan
+## Description: Uses nmap to discover hosts on the local network
+## Deps: nmap
+
+sudo nmap -sn --host-timeout 10000ms $(ip route get 8.8.8.8 | awk 'N=3 {print $N}')/24

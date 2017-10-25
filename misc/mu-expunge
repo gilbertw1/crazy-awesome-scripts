@@ -1,0 +1,10 @@
+#!/bin/sh
+## Usage: ./mu-email-expunge EMAIL_ID
+## Description: Expunges all emails with id matching $EMAIL_ID
+EMAIL_FILES="$(mu find "i:$1" -f l)"
+
+while read -r file; do
+  if [ -f "$file" ]; then
+    rm "$file"
+  fi
+done <<< "$EMAIL_FILES"

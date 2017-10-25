@@ -1,0 +1,6 @@
+#!/bin/sh
+## Usage: echo "text" | ./urlencode
+## Description: Url encodes text from stdin
+## Deps: perl
+
+perl -MURI::Escape -ne 'chomp;print uri_escape($_),"\n"'

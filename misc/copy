@@ -1,0 +1,9 @@
+#!/bin/sh
+## Usage: echo "text" | ./copy
+## Description: Copies text from stdin to clipboard
+## Deps: xsel (linux)
+
+case "$(uname)" in
+    'Darwin') pbcopy           ;;
+    *)        xsel --clipboard ;;
+esac

@@ -1,0 +1,5 @@
+#!/bin/sh
+## Usage: ./cheat COMMNAD
+## Description: Displays sample cheatsheet from cheat.sh for $COMMAND
+
+curl "cheat.sh/$1"

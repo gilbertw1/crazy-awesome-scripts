@@ -1,0 +1,6 @@
+#!/bin/sh
+## Usage: ./urldecode-clip
+## Description: Url decodes current clipboard item and adds it back to clipboard
+## Deps: misc/copy, misc/paste, misc/urlencode
+
+paste | urldecode | tr -d '\n' | copy

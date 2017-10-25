@@ -1,0 +1,29 @@
+#!/bin/sh
+## Usage: ./dunst-lock-handler
+## Description: Pauses and resumes dunst notifications on xscreensave lock/unlock
+## Deps: dunst, xscreensaver
+
+lock()
+{
+    state="locked"
+    dunst-pause
+}
+
+blank()
+{
+    state="blank"
+    dunst-pause
+}
+
+unblank()
+{
+    state="locked"
+    dunst-resume
+}
+
+xscreensaver-command -watch | while read a
+do
+    echo "$a" | grep -q '^LOCK' && lock
+    echo "$a" | grep -q '^BLANK' && blank
+    echo "$a" | grep -q '^UNBLANK' && unblank
+done

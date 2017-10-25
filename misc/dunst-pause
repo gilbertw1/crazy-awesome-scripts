@@ -1,0 +1,6 @@
+#!/bin/sh
+## Usage: ./dunst-pause
+## Description: Pauses all dunst notifications (useful when locking computer)
+## Deps: dunst
+
+notify-send "DUNST_COMMAND_PAUSE"

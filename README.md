@@ -6,6 +6,7 @@ A repository full of scripts so awesome they might make your computer explode
 scripts
 -------
 
+* [misc](misc) - A random smattering of tiny scripts that do various potentially useful things
 * [awsls](awsls) - A script that performs parallel execution of ssh commands on running aws instances.
 * [clips](clips) - A simple wrapper around clipster that surfaces clipboard history interactively.
 * [faces](faces) - An interactive script that makes it easy to select and copy unicode faces.

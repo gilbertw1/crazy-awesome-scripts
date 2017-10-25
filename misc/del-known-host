@@ -1,0 +1,5 @@
+#!/bin/sh
+## Usage: ./del-known-host HOST
+## Description: Deletes $HOST from known_hosts file
+
+ssh-keygen -R "$1"

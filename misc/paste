@@ -1,0 +1,9 @@
+#!/bin/sh
+## Usage: ./paste
+## Description: Writes current clipboard selection to stdout
+## Deps: xsel (linux)
+
+case "$(uname)" in
+    'Darwin') pbpaste             ;;
+    *)        xsel --clipboard -o ;;
+esac

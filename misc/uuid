@@ -1,0 +1,6 @@
+#!/bin/sh
+## Usage: uuid
+## Description: Copies text from stdin to clipboard
+## Deps: misc/copy
+
+echo -n "$(uuidgen)" | copy

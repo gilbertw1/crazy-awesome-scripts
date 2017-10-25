@@ -1,0 +1,5 @@
+#!/bin/sh
+## Usage: ./weather
+## Description: Displays weather information courtesy of wttr.in
+
+curl wttr.in
