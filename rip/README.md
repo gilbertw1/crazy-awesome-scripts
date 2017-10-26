@@ -30,4 +30,4 @@ show code previews.
 
 #### Screencast
 
-![rip screencast](http://drop.bryan.sh/ETrpU7KkH5--rip.gif)
+![rip screencast](http://drop.bryan.sh/vDfUkGmrBm.gif)
