@@ -18,11 +18,15 @@ show code previews.
 
     ./rip
 
+#### Flags
+
+* `-i`: Use ivy-regex-plus style matching (http://oremacs.com/swiper/#ivy--regex-plus)
+
 #### Keybindings
 
-- `ctrl-j / ctrj-n / down`: Next result
-- `ctrl-k / ctrj-p / up`: Previous result
-- `<enter>`: Open selected file/line in neovim
+* `ctrl-j / ctrj-n / down`: Next result
+* `ctrl-k / ctrj-p / up`: Previous result
+* `<enter>`: Open selected file/line in neovim
 
 #### Screencast
 

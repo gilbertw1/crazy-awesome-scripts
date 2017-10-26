@@ -48,8 +48,6 @@ if [ "$ACTIVE_ITEMS" -gt 0 ]; then
     ACTIVE_FLAG="-a 0-$((ACTIVE_ITEMS-1))"
 fi
 
-echo "ACTIVE_FLAG: $ACTIVE_FLAG"
-
 # prompt the user to select a pass entry (interactive use fzf, otherwise use rofi)
 if [[ -t 0 ]]; then
     MATCHING_TERM="$(echo "$TERMS" | fzf-tmux --prompt='site: ')"

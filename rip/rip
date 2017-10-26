@@ -1,12 +1,24 @@
 #!/bin/sh
 
-FILE_LINE_NO=$(sk-tmux --ansi -i -c 'rg -i --no-heading --line-number --color=always "{}"' --preview "preview {0}")
+# if -i flag is present use ivy-regex-plus style
+if [ "$1" = "-i" ]; then
+    # collapse all spaces and replace them with '.*'
+    FORMATTED_INPUT='$(echo '"'"'{}'"'"' | tr -s " " | sed "s/\s/.*/g")'
+else
+    FORMATTED_INPUT='{}'
+  fi
 
+# run sk(-tmux) with the templated rg command and file:line source code preview
+FILE_LINE_NO=$(sk-tmux --ansi -i -c "rg -i --no-heading --line-number --color=always \"$FORMATTED_INPUT\"" --preview "preview {0}")
+
+# if sk was cancelled without selection, exit
 if [ $? -ne 0 ] || [ -z "$FILE_LINE_NO" ]; then
     exit
 fi
 
+# extract the line and file from the selected entry
 FILE="$(echo "$FILE_LINE_NO" | cut -d":" -f1)"
 LINE_NO="$(echo "$FILE_LINE_NO" | cut -d":" -f2)"
 
+# open file in neovim with selected line number
 nvim +$LINE_NO $FILE
