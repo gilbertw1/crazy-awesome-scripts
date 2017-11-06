@@ -21,7 +21,7 @@ to the `.zshrc` or `.bashrc` file.
 Note that the included `zlite` script is required to be in the `PATH` in order for zz to function
 propertly.
 
-    zz
+    zz [DIR]
     
 #### Keybindings
 

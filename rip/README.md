@@ -16,7 +16,7 @@ line containing the result.
 Note that the included `preview` script is required to be in the `PATH` in order for rip to properly
 show code previews.
 
-    ./rip
+    ./rip [QUERY]
 
 #### Flags
 
