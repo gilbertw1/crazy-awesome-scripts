@@ -6,10 +6,10 @@ line containing the result.
 
 #### Dependencies
 
-* **ripgrep** - A crazy fast line oriented search tool (https://github.com/BurntSushi/ripgrep)
-* **skim** - A blazingly fast fuzzy finder (https://github.com/lotabout/skim)
-* **neovim** - Too lazy to find a generic way use $EDITOR and allow opening file to specific line
-* **highlight** - A flexible command line source code highlighter (http://www.andre-simon.de/doku/highlight/en/highlight.php)
+* **[ripgrep](https://github.com/BurntSushi/ripgrep)** - A crazy fast line oriented search tool
+* **[skim](https://github.com/lotabout/skim)** - A blazingly fast fuzzy finder
+* **[neovim](https://neovim.io)** - Too lazy to find a generic way use $EDITOR and allow opening file to specific line
+* **[highlight](http://www.andre-simon.de/doku/highlight/en/highlight.php)** - A flexible command line source code highlighter
 
 #### Usage
 

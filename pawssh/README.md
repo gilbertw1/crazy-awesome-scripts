@@ -4,9 +4,9 @@ A script that performs parallel execution of ssh commands on running aws instanc
 
 #### Dependencies
 
-* **aws** - Aws command line interface (https://aws.amazon.com/cli/)
-* **orgalorg** - Parallel ssh commands executioner (https://github.com/reconquest/orgalorg)
-* **jq** - Lightweight command line json processor (https://stedolan.github.io/jq/)
+* **[aws](https://aws.amazon.com/cli/)** - Aws command line interface
+* **[orgalorg](https://github.com/reconquest/orgalorg)** - Parallel ssh commands executioner
+* **[jq](https://stedolan.github.io/jq/)** - Lightweight command line json processor
 
 #### Usage
 

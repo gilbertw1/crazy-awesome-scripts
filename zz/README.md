@@ -6,8 +6,8 @@ invoked from any arbitrary process.
 
 #### Dependencies
 
-* **z** - A directory jumping utility that tracks 'frecent' directories (https://github.com/rupa/z)
-* **skim** - A blazingly fast fuzzy finder (https://github.com/lotabout/skim)
+* **[z](https://github.com/rupa/z)** - A directory jumping utility that tracks 'frecent' directories 
+* **[skim](https://github.com/lotabout/skim)** - A blazingly fast fuzzy finder
 
 #### Setup
 

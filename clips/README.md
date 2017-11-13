@@ -4,9 +4,9 @@ A simple wrapper around clipster that surfaces clipboard history in either fzf (
 
 #### Dependencies
 
-* **clipster** - a simple and efficient clipboard daemon (https://github.com/mrichar1/clipster)
-* **fzf** - Command line fuzzy matcher (https://github.com/junegunn/fzf)
-* **rofi** - Window switcher and fuzzy matcher (https://github.com/DaveDavenport/rofi)
+* **[clipster](https://github.com/mrichar1/clipster)** - a simple and efficient clipboard daemon
+* **[fzf](https://github.com/junegunn/fzf)** - Command line fuzzy matcher
+* **[rofi](https://github.com/DaveDavenport/rofi)** - Window switcher and fuzzy matcher
 
 #### Usage
 

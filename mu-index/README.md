@@ -4,8 +4,8 @@ A script that re-indexes a mail directory using `mu` and creates notifications f
 
 #### Dependencies
 
-* **mu** - maildir indexer & searcher (https://github.com/djcb/mu)
-* **notify-send** - sends desktop notifications (https://ss64.com/bash/notify-send.html)
+* **[mu](https://github.com/djcb/mu)** - maildir indexer & searcher
+* **[notify-send](https://ss64.com/bash/notify-send.html)** - sends desktop notifications
 
 #### Usage
 

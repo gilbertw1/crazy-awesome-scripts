@@ -4,10 +4,10 @@ A simple interactive script that wraps mpw and uses a configuration file to stor
 
 #### Dependencies
 
-* **mpwc** - A simple and flexible Master Password CLI client (https://github.com/gilbertw1/mpwc)
-* **fzf** - Command line fuzzy matcher (https://github.com/junegunn/fzf)
-* **rofi** - Window switcher and fuzzy matcher (https://github.com/DaveDavenport/rofi)
-* **xsel** - Program that allows programmatic clipboard access (http://www.vergenet.net/~conrad/software/xsel/)
+* **[mpwc](https://github.com/gilbertw1/mpwc)** - A simple and flexible Master Password CLI client
+* **[fzf](https://github.com/junegunn/fzf)** - Command line fuzzy matcher
+* **[rofi](https://github.com/DaveDavenport/rofi)** - Window switcher and fuzzy matcher
+* **[xsel](http://www.vergenet.net/~conrad/software/xsel/)** - Program that allows programmatic clipboard access
 
 #### Optional Dependencies
 
