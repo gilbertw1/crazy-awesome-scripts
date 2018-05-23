@@ -3,4 +3,4 @@
 ## Description: Opens terminal running PROG. Abstracts away which terminal I'm currently using
 ## Deps: alacritty
 
-alacritty -e $@
+alacritty -e "$@"

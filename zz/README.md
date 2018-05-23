@@ -1,8 +1,8 @@
 ### zz
 
 A function that uses `z` interactively to search, preview, and select recently used directories. This
-also includes a script called `zlite` (code shamelessly extracted from z) that allows `z` to be used
-invoked from any arbitrary process.
+also includes a script called `zlite` (code shamelessly extracted from z) that allows `z` to be
+invoked from any arbitrary process to search for 'frecent' directories.
 
 #### Dependencies
 

@@ -1,12 +1,6 @@
 #!/bin/sh
-## Usage: ./gvim FILE
-## Description: Opens terminal running nvim with $FILE
+## Usage: ./gvim OPTS
+## Description: Opens terminal running nvim with $OPTS
 ## Deps: Neovim, misc/term-exec
 
-for file in "$@"
-do
-  if [ -f "$file" ]; then
-    term-exec nvim $file
-    break
-  fi
-done
+term-exec nvim "$@"

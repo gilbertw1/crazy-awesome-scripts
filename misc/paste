@@ -4,6 +4,6 @@
 ## Deps: xsel (linux)
 
 case "$(uname)" in
-    'Darwin') pbpaste             ;;
-    *)        xsel --clipboard -o ;;
+    'Darwin') pbpaste                ;;
+    *)        xsel --clipboard -c -o ;;
 esac

@@ -1,7 +1,4 @@
-#!/bin/sh
-## Usage: ./cheatarg COMMAND FLAGS
-## Description: Prints information about each flag in $FLAGS with respect to $COMMAND
-## Notes: I did not write this script.
+#!/bin/bash
 
 # catch uninitialized variables
 set -u
