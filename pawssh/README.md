@@ -10,9 +10,13 @@ A script that performs parallel execution of ssh commands on running aws instanc
 
 #### Usage
 
-    ./pawssh <private-key> <user> <filter> <command>
+    ./pawssh <private-key> <user> <filter> <command> <optional-aws-profile>
 
 
 #### How it works
 
-`pawssh` uses the aws cli tools to query all running ec2 instances matching the provided `filter` argument to filter based on the 'Name' tag for each server. It then uses orgalorg to execute the provided `command` on each instance using the `private-key` and `user` arguments to authenticate with each instance. `pawssh` additionally colorizes the server names in the output and maps the hostnames back to their tagged names.
+`pawssh` uses the aws cli tools to query all running ec2 instances matching the provided `filter`
+argument to filter based on the 'Name' tag for each server. It then uses orgalorg to execute the
+provided `command` on each instance using the `private-key` and `user` arguments to authenticate
+with each instance. `pawssh` additionally colorizes the server names in the output and maps the
+hostnames back to their tagged names.

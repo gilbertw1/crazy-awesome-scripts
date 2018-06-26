@@ -9,6 +9,7 @@ PRIVATE_KEY=$1
 USER=$2
 FILTER=$3
 COMMAND=$4
+AWSPROFILE=${5:-default}
 
 # Create a rondomly sorted list of colors (used to color distinct servers)
 COLORS_LIST=$(echo "31 32 33 34 35 36 37 91 92 93 94 95 96" | tr " " "\n" | sort -R)
@@ -16,7 +17,7 @@ COLORS=$(printf "$COLORS_LIST\n%.0s" {1..50})
 
 # Retrieve all instances matching the filter (formatted: '<NameTag> <Hostname>')
 INSTANCES=$(
-  aws ec2 describe-instances --filter Name=tag:Name,Values="*$FILTER*" |
+  aws ec2 describe-instances --profile "$AWSPROFILE" --filter Name=tag:Name,Values="*$FILTER*" |
     jq --raw-output '.Reservations[]
                      | .Instances[]
                      | select(.State.Name == "running")

@@ -9,4 +9,4 @@ A script that lists out running aws instances, optionally filtering them.
 
 #### Usage
 
-    ./awsls <optional-filter>
+    ./awsls <optional-filter> <option-aws-profile>
