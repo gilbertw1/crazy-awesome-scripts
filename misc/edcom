@@ -3,4 +3,5 @@
 ## Description: Opens last 500 commands from history in vim in a new terminal (ZSH)
 ## Deps: ZSH
 
+export TERM_EXEC_NAME=popwin
 term-exec edcomc

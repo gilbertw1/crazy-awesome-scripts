@@ -3,4 +3,9 @@
 ## Description: Opens terminal running PROG. Abstracts away which terminal I'm currently using
 ## Deps: alacritty
 
-alacritty -e "$@"
+if [ -z "$TERM_EXEC_NAME"]; then
+    alacritty -e "$@"
+else
+    echo "$TERM_EXEC_NAME"
+    alacritty -t="$TERM_EXEC_NAME" -e "$@"
+fi
