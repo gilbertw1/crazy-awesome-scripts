@@ -1,0 +1,9 @@
+#!/bin/zsh --login
+## Usage: edcomc
+## Description: Opens last 500 commands from history in vim (ZSH)
+## Deps: ZSH
+
+export HISTSIZE=500
+export HISTFILE=~/.zhistory
+fc -R
+fc -l -500 | tac | sed -e 's/^[0-9]\+\s*//' | nvim -

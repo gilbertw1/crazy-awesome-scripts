@@ -1,0 +1,6 @@
+#!/bin/sh
+## Usage: edcom
+## Description: Opens last 500 commands from history in vim in a new terminal (ZSH)
+## Deps: ZSH
+
+term-exec edcomc
