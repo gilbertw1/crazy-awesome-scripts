@@ -11,7 +11,7 @@ for ENTRY in $PGPASS_ENTRIES;
 do
   FIRST_CHAR="$(echo $ENTRY | head -c 1)"
   # If first character is a '#' then this is a comment and we want to save it
-  if [[ "$FIRST_CHAR" == "#" ]]; then
+  if [[ "$FIRST_CHAR" == "#" ]] || [[ "$FIRST_CHAR" == ";" ]]; then
     LAST_COMMENT="$(echo "${ENTRY:1}" | sed '/^$/d')"
   else
     # If this is not a comment then it is a database entry and we want to capture it
