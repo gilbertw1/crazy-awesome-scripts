@@ -13,6 +13,7 @@ scripts
 * [mpw](mpw) - An interactive script that wraps mpw and uses a configuration file to store password configurations.
 * [mu-index](mu-index) - A script that re-indexes a mail directory using `mu` and creates notifications for new emails.
 * [pawssh](pawssh) - A script that performs parallel execution of ssh commands on running aws instances.
+* [pg](pg) - A script that uses the `.pgpass` file and `pgcli` to connect to a postgres database.
 * [pw](pw) - An interactive script that uses `pass` and `mpw` to provide a single interface to access all passwords.
 * [rip](rip) - A script that uses ripgrep interactively to search or 'rip' through text or code files.
 * [zz](zz) - A function that uses 'zz' interactively to search through and cd to 'frecent' directories.

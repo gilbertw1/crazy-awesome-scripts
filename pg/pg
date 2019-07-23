@@ -1,0 +1,62 @@
+#!/bin/sh
+
+PGPASS_FILE=${1:-~/.pgpass}
+# Read .pgpass file with leading whitespace and empty lines removed
+PGPASS_ENTRIES="$(cat $PGPASS_FILE | sed '/^$/d' | sed -e 's/^[ \t]*//')"
+
+# Iterate pgpass entries and extract databases.
+DATABASES=""
+IFS=$'\n'
+for ENTRY in $PGPASS_ENTRIES;
+do
+  FIRST_CHAR="$(echo $ENTRY | head -c 1)"
+  # If first character is a '#' then this is a comment and we want to save it
+  if [[ "$FIRST_CHAR" == "#" ]]; then
+    LAST_COMMENT="$(echo "${ENTRY:1}" | sed '/^$/d')"
+  else
+    # If this is not a comment then it is a database entry and we want to capture it
+    if [ ! -z "$LAST_COMMENT" ]; then
+      # Since the last comment is not empty we want to use this to name the entry
+      NEW_DATABASE="$LAST_COMMENT:$ENTRY"
+      DATABASES="$(echo "$DATABASES"$'\n'"$NEW_DATABASE")"
+    else
+      # Since last comment is empty we want to use the hostname as the name of the entry
+      HOSTNAME="$(echo $ENTRY | cut -d':' -f1)"
+      NEW_DATABASE="$HOSTNAME:$ENTRY"
+      DATABASES="$(echo "$DATABASES"$'\n'"$NEW_DATABASE")"
+    fi
+    LAST_COMMENT=""
+  fi
+done
+
+# Prompt the user to select a database by name
+DATABASES="$(echo "$DATABASES" | sed -e 's/^[ \t]*//' | sed '/^$/d')"
+SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | fzf-tmux --prompt='db: ')"
+
+if [ $? -ne 0 ] || [ -z "$SELECTION" ]; then
+    echo "Aborted db selection, exiting..."
+    exit
+fi
+
+# Fine the line beginning with the chosen db name
+DATABASE="$(echo "$DATABASES" | grep "^$SELECTION" | head -n1)"
+
+if [ -z "$DATABASE" ]; then
+  echo "Database not found, exiting..."
+  exit
+fi
+
+HOST="$(echo "$DATABASE" | cut -d':' -f2)"
+PORT="$(echo "$DATABASE" | cut -d':' -f3)"
+DB="$(echo "$DATABASE" | cut -d':' -f4)"
+USER="$(echo "$DATABASE" | cut -d':' -f5)"
+
+cat << EOF
+Connecting to Database...
+  Name: $SELECTION
+  Host: $HOST
+  DB: $DB
+  User: $USER
+
+EOF
+pgcli -h "$HOST" -U "$USER" -d "$DB"
