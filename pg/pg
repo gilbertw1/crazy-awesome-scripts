@@ -29,9 +29,14 @@ do
   fi
 done
 
-# Prompt the user to select a database by name
 DATABASES="$(echo "$DATABASES" | sed -e 's/^[ \t]*//' | sed '/^$/d')"
-SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | fzf-tmux --prompt='db: ')"
+
+# Prompt the user to select a database by name (interactive use fzf, otherwise use rofi)
+if [[ -t 0 ]]; then
+  SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | fzf-tmux --prompt='db: ')"
+else
+  SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | rofi -dmenu -i -lines 15 -width 50 -p 'db: ')"
+fi
 
 if [ $? -ne 0 ] || [ -z "$SELECTION" ]; then
     echo "Aborted db selection, exiting..."
@@ -51,7 +56,8 @@ PORT="$(echo "$DATABASE" | cut -d':' -f3)"
 DB="$(echo "$DATABASE" | cut -d':' -f4)"
 USER="$(echo "$DATABASE" | cut -d':' -f5)"
 
-cat << EOF
+if [[ -t 0 ]]; then
+  cat << EOF
 Connecting to Database...
   Name: $SELECTION
   Host: $HOST
@@ -59,4 +65,8 @@ Connecting to Database...
   User: $USER
 
 EOF
-pgcli -h "$HOST" -U "$USER" -d "$DB"
+  pgcli -h "$HOST" -U "$USER" -d "$DB"
+else
+  export TERM_EXEC_NAME=popwin
+  term-exec pgcli -h "$HOST" -U "$USER" -d "$DB"
+fi

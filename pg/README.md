@@ -5,10 +5,16 @@ select an entry, and connects `pgcli` to that database. If a comment exists on
 the line above an entry, that comment is used in the fuzzy finder to select that 
 database, otherwise it falls back to using the databases hostname.
 
+If pg is run in the terminal it will prompt the user to select a database using
+fzf. However, if it is called non-interactively (not in a terminal) it will pop
+up rofi to select a database, then pop up a terminal running `pgcli`.
+
 #### Dependencies
 
 * **[fzf](https://github.com/junegunn/fzf)** - A command-line fuzzy finder
+* **[rofi](https://github.com/DaveDavenport/rofi)** - Window switcher and fuzzy matcher
 * **[pgcli](https://www.pgcli.com/)** - command line interface for Postgres with auto-completion and syntax highlighting
+* **[term-exec](../misc/term-exec)** - Simple script that opens a popup terminal (In this repo)
 
 #### Usage
 
