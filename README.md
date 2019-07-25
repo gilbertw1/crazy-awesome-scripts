@@ -16,4 +16,5 @@ scripts
 * [pg](pg) - A script that uses the `.pgpass` file and `pgcli` to connect to a postgres database.
 * [pw](pw) - An interactive script that uses `pass` and `mpw` to provide a single interface to access all passwords.
 * [rip](rip) - A script that uses ripgrep interactively to search or 'rip' through text or code files.
+* [vpn](vpn) - A script that can be used to easily connect and disconnect vpns.
 * [zz](zz) - A function that uses 'zz' interactively to search through and cd to 'frecent' directories.

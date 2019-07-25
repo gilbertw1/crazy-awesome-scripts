@@ -1,0 +1,34 @@
+#!/bin/sh
+
+VPNS="$(nmcli connection | grep vpn)"
+NAMES="$(echo "$VPNS" | awk -F '[[:space:]][[:space:]]+' '{print gensub(/ /, "-", "g", $1) " " "("gensub(/ /, "", "g", $4)")"}' | gawk '{printf("%003d %s\n", NR, $0)}')"
+
+if [[ -t 0 ]]; then
+    SELECTION="$(echo "$NAMES" | fzf-tmux -d 15 --prompt='selection: ')"
+else
+    SELECTION="$(echo "$NAMES" | rofi -dmenu -i -lines 20 -width 20 -p 'selection: ')"
+fi
+
+# Verify user made a selection
+if [ -n "$SELECTION" ]; then
+    NUMBER="$(echo "$SELECTION" | cut -c1-3 | sed 's/^0*//')"
+    SELECTED_VPN="$(echo "$VPNS" | gawk "NR == $NUMBER { print; exit }")"
+    SELECTED_VPN_NAME="$(echo "$SELECTED_VPN" | awk -F '[[:space:]][[:space:]]+' '{print $1}')"
+    SELECTED_VPN_ID="$(echo "$SELECTED_VPN" | tr -s ' ' | cut -f 2 -d " ")"
+
+    if [[ $SELECTED_VPN == *"--"* ]]; then
+        if [[ -t 0 ]]; then
+            echo "Connecting to VPN: $SELECTED_VPN_NAME"
+        else
+            notify-send "Connecting to VPN: $SELECTED_VPN_NAME"
+        fi
+        nmcli connection up $SELECTED_VPN_ID
+    else
+        if [[ -t 0 ]]; then
+            echo "Disconnecting from VPN: $SELECTED_VPN_NAME"
+        else
+            notify-send "Disconnecting from VPN: $SELECTED_VPN_NAME"
+        fi
+        nmcli connection down $SELECTED_VPN_ID
+    fi
+fi
