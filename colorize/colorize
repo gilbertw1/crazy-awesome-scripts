@@ -12,7 +12,7 @@ THEMES="$(find "$COLORS_FOLDER" -maxdepth 1 -type d -printf "%f\n" | tail -n +2)
 if [[ -t 0 ]]; then
     THEME="$(echo "$THEMES" | fzf-tmux --prompt='theme: ')"
 else
-    THEME="$(echo "$THEMES" | rofi -dmenu -i -lines 15 -width 50 $ACTIVE_FLAG -p 'theme: ')"
+    THEME="$(echo "$THEMES" | rofi -dmenu -i -lines 15 -width 50 $ACTIVE_FLAG -p 'theme')"
 fi
 
 THEME_FOLDER="$HOME/.colors/$THEME"

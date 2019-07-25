@@ -14,7 +14,7 @@ SITES="$(echo "$MPW_CONFIG" | tr "\t" " " | tr -s ' ' | cut -d' ' -f1)"
 if [[ -t 0 ]]; then
     SELECTED_SITE="$(echo "$SITES" | fzf-tmux --prompt='site: ')"
 else
-    SELECTED_SITE="$(echo "$SITES" | rofi -dmenu -i -lines 20 -width 30 -p 'site: ')"
+    SELECTED_SITE="$(echo "$SITES" | rofi -dmenu -i -lines 20 -width 30 -p 'site')"
 fi
 
 # prompt for the user to enter the master password (interactive use normal prompt, otherwise use rofi)
@@ -22,7 +22,7 @@ if [[ -t 0 ]]; then
     echo -n "Password:"
     read -s MASTER_PASSWORD
 else
-    MASTER_PASSWORD="$(echo "" | rofi -password -dmenu -i -lines 1 -width 30 -p 'password: ')"
+    MASTER_PASSWORD="$(echo "" | rofi -password -dmenu -i -lines 1 -width 30 -p 'password')"
 fi
 
 # look up matching mpw entry for selected site

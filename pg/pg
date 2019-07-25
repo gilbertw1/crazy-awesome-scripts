@@ -35,7 +35,7 @@ DATABASES="$(echo "$DATABASES" | sed -e 's/^[ \t]*//' | sed '/^$/d')"
 if [[ -t 0 ]]; then
   SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | fzf-tmux --prompt='db: ')"
 else
-  SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | rofi -dmenu -i -lines 15 -width 50 -p 'db: ')"
+  SELECTION="$(echo "$DATABASES" | sed 's/:.*//' | rofi -dmenu -i -lines 15 -width 50 -p 'db')"
 fi
 
 if [ $? -ne 0 ] || [ -z "$SELECTION" ]; then

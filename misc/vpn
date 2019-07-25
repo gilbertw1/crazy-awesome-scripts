@@ -6,7 +6,7 @@ NAMES="$(echo "$VPNS" | cut -f 1 -d " " | gawk '{printf("%003d %s\n", NR, $0)}')
 if [[ -t 0 ]]; then
     SELECTION="$(echo "$NAMES" | fzf-tmux -d 15 --prompt='selection: ')"
 else
-    SELECTION="$(echo "$NAMES" | rofi -dmenu -i -lines 20 -width 20 -p 'selection: ')"
+    SELECTION="$(echo "$NAMES" | rofi -dmenu -i -lines 20 -width 20 -p 'selection')"
 fi
 
 # Verify user made a selection

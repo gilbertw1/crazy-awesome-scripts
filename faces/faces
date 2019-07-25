@@ -16,7 +16,7 @@ FACES='¯\_(ツ)_/¯
 if [[ -t 0 ]]; then
     CHOSEN_FACE="$(echo "$FACES" | fzf-tmux --prompt='face: ')"
 else
-    CHOSEN_FACE="$(echo "$FACES" | rofi -dmenu -i -lines 15 -width 30 -p 'face: ')"
+    CHOSEN_FACE="$(echo "$FACES" | rofi -dmenu -i -lines 15 -width 30 -p 'face')"
 fi
 
 if [ $? -ne 0 ] || [ -z "$CHOSEN_FACE" ]; then

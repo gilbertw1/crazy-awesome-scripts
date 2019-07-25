@@ -52,7 +52,7 @@ fi
 if [[ -t 0 ]]; then
     MATCHING_TERM="$(echo "$TERMS" | fzf-tmux --prompt='site: ')"
 else
-    MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 $ACTIVE_FLAG -p 'site: ')"
+    MATCHING_TERM="$(echo "$TERMS" | rofi -dmenu -i -lines 15 -width 50 $ACTIVE_FLAG -p 'site')"
 fi
 
 if [ $? -ne 0 ] || [ -z "$MATCHING_TERM" ]; then
@@ -95,7 +95,7 @@ else
         echo -n "Password:"
         read -s MASTER_PASSWORD
     else
-        MASTER_PASSWORD="$(echo "" | rofi -password -dmenu -i -lines 1 -width 30 -p 'password: ')"
+        MASTER_PASSWORD="$(echo "" | rofi -password -dmenu -i -lines 1 -width 30 -p 'password')"
     fi
 
     # extract selected site value from mpw entry

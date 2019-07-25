@@ -4,9 +4,9 @@ VPNS="$(nmcli connection | grep vpn)"
 NAMES="$(echo "$VPNS" | awk -F '[[:space:]][[:space:]]+' '{print gensub(/ /, "-", "g", $1) " " "("gensub(/ /, "", "g", $4)")"}' | gawk '{printf("%003d %s\n", NR, $0)}')"
 
 if [[ -t 0 ]]; then
-    SELECTION="$(echo "$NAMES" | fzf-tmux -d 15 --prompt='selection: ')"
+    SELECTION="$(echo "$NAMES" | fzf-tmux -d 15 --prompt='vpn: ')"
 else
-    SELECTION="$(echo "$NAMES" | rofi -dmenu -i -lines 20 -width 20 -p 'selection: ')"
+    SELECTION="$(echo "$NAMES" | rofi -dmenu -i -lines 20 -width 20 -p 'vpn')"
 fi
 
 # Verify user made a selection
