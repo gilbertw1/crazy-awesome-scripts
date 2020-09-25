@@ -15,6 +15,7 @@ else
     THEME="$(echo "$THEMES" | rofi -dmenu -i -lines 15 -width 50 $ACTIVE_FLAG -p 'theme')"
 fi
 
+BASE_FOLDER="$HOME/.colors/base"
 THEME_FOLDER="$HOME/.colors/$THEME"
 
 if [ -d "$THEME_FOLDER" ]; then
@@ -24,120 +25,127 @@ else
     exit;
 fi;
 
+export SUBS_MAPPINGS="$(cat "$BASE_FOLDER/mappings.txt" "$THEME_FOLDER/mappings.txt")"
+
+theme_or_base () {
+  BASE_FILE="$BASE_FOLDER/$1"
+  THEME_FILE="$THEME_FOLDER/$1"
+  if [ -f "$THEME_FILE" ]; then
+    echo "$THEME_FILE"
+  else
+    echo "$BASE_FILE"
+  fi;
+}
+
+replace_file_theme_section () {
+  COMMENT="${3:-###}"
+  TEMP_FILE="/tmp/theme-temp"
+  subs $2 $TEMP_FILE
+  start='^'"$COMMENT"' COLORIZE SECTION START$'
+  end='^'"$COMMENT"' COLORIZE SECTION END$'
+  sed -i -e "/$start/,/$end/{ /$start/{p; r $TEMP_FILE
+          }; /$end/p; d }" $1
+  rm $TEMP_FILE
+}
+
 # Colorize Emacs
 echo "Theming emacs..."
-EMACS_COLOR_FILE="$THEME_FOLDER/emacs/emacs.el"
+EMACS_COLOR_FILE="$(theme_or_base "emacs/emacs.el")"
 if [ -f "$EMACS_COLOR_FILE" ]; then
-    emacsclient --eval "$(cat "$EMACS_COLOR_FILE")"
+    emacsclient --eval "$(subs "$EMACS_COLOR_FILE" -)"
 fi;
+echo "Done theming emacs."
 
 # Colorize Alacritty
 echo "Theming alacritty..."
-ALACRITTY_COLOR_FILE="$THEME_FOLDER/alacritty/alacritty.yml"
+ALACRITTY_COLOR_FILE="$(theme_or_base "alacritty/alacritty.yml")"
 ALACRITTY_CONFIG_FILE="$HOME/.config/alacritty/alacritty.yml"
 if [ -f "$ALACRITTY_COLOR_FILE" ]; then
-    start='^### COLORIZE SECTION START$'
-    end='^### COLORIZE SECTION END$'
-    sed -i -e "/$start/,/$end/{ /$start/{p; r $ALACRITTY_COLOR_FILE
-           }; /$end/p; d }" $ALACRITTY_CONFIG_FILE
-    echo "Done theming alacritty"
+    replace_file_theme_section "$ALACRITTY_CONFIG_FILE" "$ALACRITTY_COLOR_FILE"
+    echo "Done theming alacritty."
 else
-    echo "Failed to theme alacritty. File does not exist: $ALACRITTY_COLOR_FILE"
+    echo "Failed to theme alacritty. File does not exist: $ALACRITTY_COLOR_FILE."
 fi;
 
-# Colorize Tmux
+# Colorize Tmux -- TODO: REPLACE
 echo "Theming tmux..."
-TMUX_COLOR_FILE="$THEME_FOLDER/tmux/.tmux.conf"
+TMUX_COLOR_FILE="$(theme_or_base "tmux/.tmux.conf")"
 if [ -f "$TMUX_COLOR_FILE" ]; then
-    tmux source-file $TMUX_COLOR_FILE
-    echo "Done theming tmux"
+    subs "$TMUX_COLOR_FILE" "/var/tmp/tmux-colors.tmp"
+    tmux source-file "/var/tmp/tmux-colors.tmp"
+    rm "/var/tmp/tmux-colors.tmp"
+    echo "Done theming tmux."
 else
-    echo "Failed to theme tmux. File does not exist: $TMUX_COLOR_FILE"
+    echo "Failed to theme tmux. File does not exist: $TMUX_COLOR_FILE."
 fi;
 
 
 # Colorize Vim
 echo "Theming vim..."
-VIM_COLOR_FILE="$THEME_FOLDER/vim/init.vim"
+VIM_COLOR_FILE="$(theme_or_base "vim/init.vim")"
 VIM_CONFIG_FILE="$HOME/.config/nvim/init.vim"
 if [ -f "$VIM_COLOR_FILE" ]; then
-    start='^""" COLORIZE SECTION START$'
-    end='^""" COLORIZE SECTION END$'
-    sed -i -e "/$start/,/$end/{ /$start/{p; r $VIM_COLOR_FILE
-           }; /$end/p; d }" $VIM_CONFIG_FILE
-    echo "Done theming vim"
+    replace_file_theme_section "$VIM_CONFIG_FILE" "$VIM_COLOR_FILE" '"""'
+    echo "Done theming vim."
 else
-    echo "Failed to theme vim. File does not exist: $VIM_COLOR_FILE"
+    echo "Failed to theme vim. File does not exist: $VIM_COLOR_FILE."
 fi;
 
 # Colorize Tint2
-TINT2_COLOR_FILE="$THEME_FOLDER/tint2/tint2rc"
+echo "Theming tint2..."
+TINT2_COLOR_FILE="$(theme_or_base "tint2/tint2rc")"
 TINT2_CONFIG_FILE="$HOME/.config/tint2/tint2rc"
 if [ -f "$TINT2_COLOR_FILE" ]; then
-    start='^### COLORIZE SECTION START$'
-    end='^### COLORIZE SECTION END$'
-    sed -i -e "/$start/,/$end/{ /$start/{p; r $TINT2_COLOR_FILE
-           }; /$end/p; d }" $TINT2_CONFIG_FILE
+    replace_file_theme_section "$TINT2_CONFIG_FILE" "$TINT2_COLOR_FILE"
     killall tint2
     start tint2
-    echo "Done theming tint2"
+    echo "Done theming tint2."
 else
-    echo "Failed to theme tint2. File does not exist: $TINT2_COLOR_FILE"
+    echo "Failed to theme tint2. File does not exist: $TINT2_COLOR_FILE."
 fi;
 
 
 # Colorize Rofi
-ROFI_COLOR_FILE="$THEME_FOLDER/rofi/config"
+echo "Theming rofi..."
+ROFI_COLOR_FILE="$(theme_or_base "rofi/config")"
 ROFI_CONFIG_FILE="$HOME/.config/rofi/config"
 if [ -f "$ROFI_COLOR_FILE" ]; then
-    start='^### COLORIZE SECTION START$'
-    end='^### COLORIZE SECTION END$'
-    sed -i -e "/$start/,/$end/{ /$start/{p; r $ROFI_COLOR_FILE
-           }; /$end/p; d }" $ROFI_CONFIG_FILE
-    echo "Done theming rofi"
+    replace_file_theme_section "$ROFI_CONFIG_FILE" "$ROFI_COLOR_FILE"
+    echo "Done theming rofi."
 else
-    echo "Failed to theme rofi. File does not exist: $ROFI_COLOR_FILE"
+    echo "Failed to theme rofi. File does not exist: $ROFI_COLOR_FILE."
 fi;
 
 # Colorize GTK Theme
-GTK_THEME_COLOR_FILE="$THEME_FOLDER/gtk/theme"
+echo "Setting gtk theme..."
+GTK_THEME_COLOR_FILE="$(theme_or_base "gtk/theme")"
 if [ -f "$GTK_THEME_COLOR_FILE" ]; then
-    xfconf-query -c xsettings -p /Net/ThemeName -s "$(cat "$GTK_THEME_COLOR_FILE")"
+    xfconf-query -c xsettings -p /Net/ThemeName -s "$(subs "$GTK_THEME_COLOR_FILE" -)"
 fi;
 
 # Colorize GTK Icons
-GTK_ICONS_COLOR_FILE="$THEME_FOLDER/gtk/icons"
+GTK_ICONS_COLOR_FILE="$(theme_or_base "gtk/icons")"
 if [ -f "$GTK_ICONS_COLOR_FILE" ]; then
-    xfconf-query -c xsettings -p /Net/IconThemeName -s "$(cat "$GTK_ICONS_COLOR_FILE")"
+    xfconf-query -c xsettings -p /Net/IconThemeName -s "$(subs "$GTK_ICONS_COLOR_FILE" -)"
 fi;
+echo "Done setting gtk theme."
 
 # Colorize Wallpaper
-WALLPAPER_COLOR_FILE="$THEME_FOLDER/wallpaper/wallpaper.txt"
+echo "Setting wallpaper..."
+WALLPAPER_COLOR_FILE="$(theme_or_base "wallpaper/wallpaper.txt")"
 if [ -f "$WALLPAPER_COLOR_FILE" ]; then
-    set-wallpaper "$(cat "$WALLPAPER_COLOR_FILE")"
+   set-wallpaper "$(subs "$WALLPAPER_COLOR_FILE" - | tr -d "[:space:]")"
 fi;
+echo "Done setting wallpaper."
 
 # Colorize Xmobar
 echo "Theming xmobar..."
-XMOBAR_COLOR_FILE="$THEME_FOLDER/xmobar/xmobarrc"
+XMOBAR_COLOR_FILE="$(theme_or_base "/xmobar/xmobarrc")"
 XMOBAR_CONFIG_FILE="$HOME/.config/xmobar/xmobarrc"
 if [ -f "$XMOBAR_COLOR_FILE" ]; then
-    cp $XMOBAR_COLOR_FILE $XMOBAR_CONFIG_FILE
+    subs $XMOBAR_COLOR_FILE $XMOBAR_CONFIG_FILE
     xmonad --restart
-    echo "Done theming xmobar"
+    echo "Done theming xmobar."
 else
     echo "Failed to theme xmobar. File does not exist: $XMOBAR_COLOR_FILE"
-fi;
-
-# Colorize Qutebr5owser
-QUTEBROWSER_COLOR_FILE="$THEME_FOLDER/qutebrowser/config.py"
-QUTEBROWSER_CONFIG_FILE="$HOME/.config/qutebrowser/config.py"
-if [ -f "$QUTEBROWSER_COLOR_FILE" ]; then
-    start='^### COLORIZE SECTION START$'
-    end='^### COLORIZE SECTION END$'
-    sed -i -e "/$start/,/$end/{ /$start/{p; r $QUTEBROWSER_COLOR_FILE
-           }; /$end/p; d }" $QUTEBROWSER_CONFIG_FILE
-    echo "Done theming qutebrowser"
-else
-    echo "Failed to theme qutebrowser. File does not exist: $QUTEBROWSER_COLOR_FILE"
 fi;
