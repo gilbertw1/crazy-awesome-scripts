@@ -164,6 +164,19 @@ else
     echo "Failed to theme xmonad. File does not exist: $XMONAD_COLOR_FILE"
 fi;
 
+# Colorize Dunst
+echo "Theming dunst..."
+DUNST_COLOR_FILE="$(theme_or_base "/dunst/dunstrc")"
+DUNST_CONFIG_FILE="$HOME/.config/dunst/dunstrc"
+if [ -f "$DUNST_COLOR_FILE" ]; then
+    replace_file_theme_section "$DUNST_CONFIG_FILE" "$DUNST_COLOR_FILE"
+    killall dunst
+    notify-send "Theming Done."
+    echo "Done theming dunst."
+else
+    echo "Failed to theme dunst. File does not exist: $DUNST_COLOR_FILE"
+fi;
+
 # Colorize Lock Screen
 echo "Theming lock screen..."
 LOCK_COLOR_FILE="$(theme_or_base "/lock/start-locker.sh")"
