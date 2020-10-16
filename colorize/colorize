@@ -70,10 +70,12 @@ fi;
 # Colorize Tmux -- TODO: REPLACE
 echo "Theming tmux..."
 TMUX_COLOR_FILE="$(theme_or_base "tmux/.tmux.conf")"
+TMUX_CONFIG_FILE="$HOME/.tmux.conf"
 if [ -f "$TMUX_COLOR_FILE" ]; then
     subs "$TMUX_COLOR_FILE" "/var/tmp/tmux-colors.tmp"
     tmux source-file "/var/tmp/tmux-colors.tmp"
     rm "/var/tmp/tmux-colors.tmp"
+    replace_file_theme_section "$TMUX_CONFIG_FILE" "$TMUX_COLOR_FILE"
     echo "Done theming tmux."
 else
     echo "Failed to theme tmux. File does not exist: $TMUX_COLOR_FILE."
@@ -134,7 +136,7 @@ echo "Done setting gtk theme."
 echo "Setting wallpaper..."
 WALLPAPER_COLOR_FILE="$(theme_or_base "wallpaper/wallpaper.txt")"
 if [ -f "$WALLPAPER_COLOR_FILE" ]; then
-   set-wallpaper "$(subs "$WALLPAPER_COLOR_FILE" - | tr -d "[:space:]")"
+   feh --bg-fill "$(subs "$WALLPAPER_COLOR_FILE" - | tr -d "[:space:]")"
 fi;
 echo "Done setting wallpaper."
 
@@ -160,4 +162,15 @@ if [ -f "$XMONAD_COLOR_FILE" ]; then
     echo "Done theming xmonad."
 else
     echo "Failed to theme xmonad. File does not exist: $XMONAD_COLOR_FILE"
+fi;
+
+# Colorize Lock Screen
+echo "Theming lock screen..."
+LOCK_COLOR_FILE="$(theme_or_base "/lock/start-locker.sh")"
+LOCK_CONFIG_FILE="$HOME/bin/start-locker.sh"
+if [ -f "$LOCK_COLOR_FILE" ]; then
+    replace_file_theme_section "$LOCK_CONFIG_FILE" "$LOCK_COLOR_FILE"
+    echo "Done theming lock screen."
+else
+    echo "Failed to theme lock screen. File does not exist: $XMONAD_COLOR_FILE"
 fi;
