@@ -27,7 +27,7 @@ if [ ! -z "$URL" ]; then
 fi
 
 # create a list of all pass entries
-TERMS="$(find ~/.password-store/ -type f | cut -sd / -f 2- | sed "s/^.*password-store\///" | sed '/^\./ d' | sed "s/.gpg//")"
+TERMS="$(find ~/.password-store/logins -type f | cut -sd / -f 2- | sed "s/^.*password-store\/logins\///" | sed '/^\./ d' | sed "s/.gpg//")"
 
 
 ACTIVE_ITEMS=0
@@ -78,7 +78,7 @@ if [ ! -z "$DOMAIN" ]; then
 fi
 
 # retrieve password for entry
-PASSWORD="$(pass $MATCHING_TERM)"
+PASSWORD="$(pass logins/$MATCHING_TERM)"
 
 # look up matching mpw entry for password
 MATCHING_ENTRY="$(echo "$MPW_CONFIG" | tr "\t" " " | tr -s ' ' | grep -i "^$PASSWORD\s" | head -n 1)"
@@ -111,7 +111,7 @@ else
     SYMBOLS="$(echo "$MPWC_OUTPUT" | cut -d "]" -f1 | cut -c 2-)"
 
     # put the password in the clipboard
-    echo "$PASSWORD" | xsel --clipboard
+    echo -n "$PASSWORD" | xsel --clipboard
 fi
 
 # Display popup notification, optionally with mpw symbols if master password
@@ -123,13 +123,18 @@ fi
 
 # Verify clipster is running, exit otherwise
 clipster -o > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    echo 'Not using clipster, password will not be removed from clipboard'
-    exit
+if [ $? -eq 0 ]; then
+    # remove clip from clipster after 30 seconds
+    echo ""
+    echo "Deleting password from clipoard in 30 seconds..."
+    sleep 30
+    echo -n "$PASSWORD" | clipster -r --clipboard
 fi
 
-# remove clip from clipster after 30 seconds
-echo ""
-echo "Deleting password from clipoard in 30 seconds..."
-sleep 30
-echo -n "$PASSWORD" | clipster -r --clipboard
+if [ -x "$(command -v clipman)" ]; then
+    echo ""
+    echo "DETECTED CLIPMAN"
+    echo "Deleting password from clipoard in 30 seconds..."
+    sleep 30
+    clipman clear --tool=CUSTOM --print0 --tool-args="printf \"$PASSWORD\""
+fi

@@ -13,7 +13,7 @@ chmod o-r $TMPFILE
 if [ ! -z "SYNTAX" ]; then
     gvim -c "set syntax=$SYNTAX" -c ':set wrap' -c ':set linebreak' $TMPFILE
 else
-    gvim  -c ':set wrap' -c ':set linebreak' $TMPFILE
+    gvim -c ':set wrap' -c ':set linebreak' $TMPFILE
 fi
 
 cat $TMPFILE | copy
